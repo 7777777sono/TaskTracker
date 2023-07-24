@@ -1,4 +1,5 @@
 class TasksController < ApplicationController
+    before_action :action_check
     before_action :set_task, only: %i[ show edit update destroy ]
 
     # GET /users/:user_id/tasks or /users/:user_id/tasks.json
@@ -6,7 +7,7 @@ class TasksController < ApplicationController
         @tasks = Task.all
 
         respond_to do |format|
-            format.json { render json: @users, status: :ok }
+            format.json { render json: @tasks, status: :ok }
         end
     end
 
@@ -31,7 +32,7 @@ class TasksController < ApplicationController
             if @task.save
                 format.json { message: "登録成功です。", status: :created }
             else
-                format.json { render json: @user.errors, status: :unprocessable_entity }
+                format.json { render json: @task.errors, status: :unprocessable_entity }
             end
         end
     end
@@ -42,7 +43,7 @@ class TasksController < ApplicationController
             if @task.update(task_params)
                 format.json { message: "更新完了です。", status: :ok }
             else
-                format.json { render json: @user.errors, status: :unprocessable_entity }
+                format.json { render json: @task.errors, status: :unprocessable_entity }
             end
         end
     end
@@ -57,13 +58,29 @@ class TasksController < ApplicationController
     end
 
     private
-        # idに対応するデータを見つける
-        def set_task
-            @task = Task.find(params[:id])
+    # idに対応するデータを見つける
+    def set_task
+        # ログインしていたらそのユーザが登録したタスクを格納する
+        if session[:user_id] != nil
+            @task = Task.find_by(user_id: session[:user_id])
         end
+    end
 
-        # 必須のtaskパラメータを取得する
-        def task_params
-            params.require(:task).permit(:name, :deadline, :priority, :is_complete)
+    # 必須のtaskパラメータを取得する
+    def task_params
+        params.require(:task).permit(:name, :deadline, :priority, :is_complete, :user_id)
+    end
+
+    # ログインしてないとtaskは、操作できないのでログインしているかどうかを確認する。
+    def action_check
+        # ログインしているならuser_idをセットする。
+        if session[:user_id] != nil
+            @task.user_id = session[:user_id]
+        # ログインしていなかったらエラーをjsonで返す。
+        else
+            respond_to do |format|
+                format.json { message: "ログインしてください。", status: :unauthorized }
+            end
         end
+    end
 end

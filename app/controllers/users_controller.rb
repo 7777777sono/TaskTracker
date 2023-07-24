@@ -58,13 +58,13 @@ class UsersController < ApplicationController
     end
 
     private
-        # idに対応するデータを見つける
-        def set_user
-            @user = User.find(params[:id])
-        end
+    # idに対応するデータを見つける
+    def set_user
+        @user = User.find(params[:id])
+    end
 
-        # 必須のuserパラメータを取得する
-        def user_params
-            params.require(:user).permit(:name, :password, :google_id)
-        end
+    # 必須のuserパラメータを取得する
+    def user_params
+        params.require(:user).permit(:name, :password, :google_id)
+    end
 end
