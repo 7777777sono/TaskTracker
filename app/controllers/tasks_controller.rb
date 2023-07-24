@@ -1,71 +1,69 @@
 class TasksController < ApplicationController
-    before_action :function_enabled_judge, only: %i[ new create edit update destroy ]
-    before_action :set_room, only: %i[ show edit update destroy ]
+    before_action :set_task, only: %i[ show edit update destroy ]
 
-    # GET /rooms or /rooms.json
+    # GET /users/:user_id/tasks or /users/:user_id/tasks.json
     def index
-        @rooms = Room.all.with_attached_images
+        @tasks = Task.all
+
+        respond_to do |format|
+            format.json { render json: @users, status: :ok }
+        end
     end
 
-    # GET /rooms/1 or /rooms/1.json
+    # GET /tasks/1 or /tasks/1.json
     def show
     end
 
-    # GET /rooms/new
+    # GET /tasks/new
     def new
-        @room = Room.new
+        @task = Task.new
     end
 
-    # GET /rooms/1/edit
+    # GET /tasks/1/edit
     def edit
     end
 
-    # POST /rooms or /rooms.json
+    # POST /users/:user_id/tasks or /users/:user_id/tasks.json
     def create
-        @room = Room.new(room_params)
+        @room = Task.new(task_params)
 
         respond_to do |format|
-            if @room.save
-                session[:room] = @room.name
-                format.json { render :show, status: :created, location: @room }
+            if @task.save
+                format.json { message: "登録成功です。", status: :created }
             else
-                format.json { render json: @room.errors, status: :unprocessable_entity }
+                format.json { render json: @user.errors, status: :unprocessable_entity }
             end
         end
     end
 
-    # PATCH/PUT /rooms/1 or /rooms/1.json
+    # PATCH/PUT /tasks/1 or /tasks/1.json
     def update
         respond_to do |format|
-            if @room.update(room_params)
-                format.json { render :show, status: :ok, location: @room }
+            if @task.update(task_params)
+                format.json { message: "更新完了です。", status: :ok }
             else
-                format.json { render json: @room.errors, status: :unprocessable_entity }
+                format.json { render json: @user.errors, status: :unprocessable_entity }
             end
         end
     end
 
-    # DELETE /rooms/1 or /rooms/1.json
+    # DELETE /tasks/1 or /tasks/1.json
     def destroy
-        @room.destroy
+        @task.destroy
 
         respond_to do |format|
-            format.json { head :no_content }
+            format.json { message: "削除成功です。", status: :no_content }
         end
     end
 
     private
-        def set_room
-            @room = Room.find(params[:id])
+        # idに対応するデータを見つける
+        def set_task
+            @task = Task.find(params[:id])
         end
 
-        def room_params
-            params.require(:room).permit(:name, :place, :number, images: [])
-        end
-
-        def function_enabled_judge
-            if session[:user_id] == nil || !User.find(session[:user_id]).admin
-                redirect_to root_path
-            end
+        # 必須のtaskパラメータを取得する
+        def task_params
+            params.require(:task).permit(:name, :deadline, :priority, :is_complete)
         end
 end
