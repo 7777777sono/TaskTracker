@@ -25,7 +25,7 @@ class TasksController < ApplicationController
 
     # POST /users/:user_id/tasks or /users/:user_id/tasks.json
     def create
-        @room = Task.new(task_params)
+        @task = Task.new(task_params)
 
         respond_to do |format|
             if @task.save
