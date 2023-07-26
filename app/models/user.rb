@@ -9,5 +9,5 @@ class User < ApplicationRecord
     validates :google_id, presence: true
 
     # パスワードは、5から20文字まで
-    validates :passward, length: { in: 5..20 }
+    validates :password, length: { in: 5..20 }
 end

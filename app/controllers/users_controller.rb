@@ -5,10 +5,6 @@ class UsersController < ApplicationController
     def index
         @users = User.all
 
-        # # リクエストされるフォーマットがJSON形式
-        # respond_to do |format|
-        #     format.json { render json: @users, status: :ok }
-        # end
         render json: @users, status: :ok 
     end
 
@@ -36,6 +32,20 @@ class UsersController < ApplicationController
         #         format.json { render json: @user.errors, status: :unprocessable_entity }
         #     end
         # end
+        @users = User.all
+
+        is_registered = registered_check
+
+        if is_registered
+            render  json: { message: "登録済みです。" }, status: :ok
+            return
+        end
+
+        if @user.save
+            render json: { message: "登録成功です。" }, status: :created
+        else
+            render json: @user.errors, status: :unprocessable_entity
+        end
     end
 
     # PATCH/PUT /users/1 or /users/1.json
@@ -66,6 +76,16 @@ class UsersController < ApplicationController
 
     # 必須のuserパラメータを取得する
     def user_params
-        params.require(:user).permit(:name, :password, :google_id)
+        params.require(:user).permit(:name, :password, :google_id, :email)
+    end
+
+    # 登録済みかどうかを確認するメソッド
+    def registered_check
+        @users.each do |element|
+            if element.name == @user.name && element.google_id == @user.google_id && element.email == @user.email
+                return true
+            end
+        end
+        return false
     end
 end
