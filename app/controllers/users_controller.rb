@@ -25,13 +25,6 @@ class UsersController < ApplicationController
     def create
         @user = User.new(user_params)
 
-        # respond_to do |format|
-        #     if @user.save
-        #         format.json { message: "登録成功です。", status: :created }
-        #     else
-        #         format.json { render json: @user.errors, status: :unprocessable_entity }
-        #     end
-        # end
         @users = User.all
 
         is_registered = registered_check
@@ -50,6 +43,7 @@ class UsersController < ApplicationController
 
     # PATCH/PUT /users/1 or /users/1.json
     def update
+
         # respond_to do |format|
         #     if @user.update(user_params)
         #         format.json { message: "更新完了です。", status: :ok }

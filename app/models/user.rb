@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+    # password_digestという属性に暗号化されたパスワードが格納される
+    has_secure_password
+
     # 複数のtaskモデルのインスタンスを持つ
     has_many :tasks
 
