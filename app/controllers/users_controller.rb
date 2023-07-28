@@ -29,8 +29,17 @@ class UsersController < ApplicationController
 
         is_registered = registered_check
 
-        if is_registered
+        # 更新じゃなくて登録済みなのに登録しそうだったら登録済みのメッセージを送る。
+        if is_registered && !params[:is_update]
             render  json: { message: "登録済みです。" }, status: :ok
+            return
+        # 更新かつきちんと登録されていたらそのユーザidを送る。
+        elsif is_registered && params[:is_update]
+            render json: { id: @user.id }, status: :ok
+            return
+        # 登録してないのに更新しようとしたらidを-1とする。
+        elsif !is_registered && params[:is_update]
+            render json: { id: -1 }, status: :ok
             return
         end
 
@@ -44,13 +53,11 @@ class UsersController < ApplicationController
     # PATCH/PUT /users/1 or /users/1.json
     def update
 
-        # respond_to do |format|
-        #     if @user.update(user_params)
-        #         format.json { message: "更新完了です。", status: :ok }
-        #     else
-        #         format.json { render json: @user.errors, status: :unprocessable_entity }
-        #     end
-        # end
+        if @user.update(user_params)
+            render json: { message: "更新完了です。" }, status: :created
+        else
+            render json: @user.errors, status: :unprocessable_entity
+        end
     end
 
     # DELETE /users/1 or /users/1.json
@@ -77,6 +84,7 @@ class UsersController < ApplicationController
     def registered_check
         @users.each do |element|
             if element.name == @user.name && element.google_id == @user.google_id && element.email == @user.email
+                @user = element
                 return true
             end
         end
