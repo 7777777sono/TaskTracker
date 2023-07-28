@@ -8,6 +8,9 @@ class User < ApplicationRecord
     # 名前は存在しているか
     validates :name, presence: true
 
+    # メールアドレスのフォーマットは適切か
+    validates :email, presence: true, format: { with: /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i }
+
     # google idは存在しているか
     validates :google_id, presence: true
 

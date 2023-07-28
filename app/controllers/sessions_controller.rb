@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
         # ユーザが存在し、かつパスワードが一致する場合のみログイン成功とする。
         if @user && @user.authenticate(params[:password])
             session[:user_id] = @user.id
-            render json: { message: "ログイン成功" }, status: :ok 
+            render json: { data: @user, message: "ログイン成功" }, status: :ok 
         else
             render json: { message: "入力したメールアドレスかパスワードが違います" }, status: :unauthorized
         end
