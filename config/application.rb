@@ -25,5 +25,8 @@ module Backend
     config.api_only = true
 
     config.x.cors_allowed_origins = ENV.fetch('CORS_ALLOWED_ORIGINS', 'http://localhost:3000')
+    config.session_store :cookie_store, key: '_backend_session'
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use config.session_store, config.session_options
   end
 end

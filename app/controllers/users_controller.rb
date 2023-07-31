@@ -5,10 +5,6 @@ class UsersController < ApplicationController
     def index
         @users = User.all
 
-        # # リクエストされるフォーマットがJSON形式
-        # respond_to do |format|
-        #     format.json { render json: @users, status: :ok }
-        # end
         render json: @users, status: :ok 
     end
 
@@ -29,24 +25,39 @@ class UsersController < ApplicationController
     def create
         @user = User.new(user_params)
 
-        # respond_to do |format|
-        #     if @user.save
-        #         format.json { message: "登録成功です。", status: :created }
-        #     else
-        #         format.json { render json: @user.errors, status: :unprocessable_entity }
-        #     end
-        # end
+        @users = User.all
+
+        is_registered = registered_check
+
+        # 更新じゃなくて登録済みなのに登録しそうだったら登録済みのメッセージを送る。
+        if is_registered && !params[:is_update]
+            render  json: { message: "登録済みです。" }, status: :ok
+            return
+        # 更新かつきちんと登録されていたらそのユーザidを送る。
+        elsif is_registered && params[:is_update]
+            render json: { id: @user.id }, status: :ok
+            return
+        # 登録してないのに更新しようとしたらidを-1とする。
+        elsif !is_registered && params[:is_update]
+            render json: { id: -1 }, status: :ok
+            return
+        end
+
+        if @user.save
+            render json: { message: "登録成功です。" }, status: :created
+        else
+            render json: @user.errors, status: :unprocessable_entity
+        end
     end
 
     # PATCH/PUT /users/1 or /users/1.json
     def update
-        # respond_to do |format|
-        #     if @user.update(user_params)
-        #         format.json { message: "更新完了です。", status: :ok }
-        #     else
-        #         format.json { render json: @user.errors, status: :unprocessable_entity }
-        #     end
-        # end
+
+        if @user.update(user_params)
+            render json: { message: "更新完了です。" }, status: :created
+        else
+            render json: @user.errors, status: :unprocessable_entity
+        end
     end
 
     # DELETE /users/1 or /users/1.json
@@ -66,6 +77,17 @@ class UsersController < ApplicationController
 
     # 必須のuserパラメータを取得する
     def user_params
-        params.require(:user).permit(:name, :password, :google_id)
+        params.require(:user).permit(:name, :password, :google_id, :email)
+    end
+
+    # 登録済みかどうかを確認するメソッド
+    def registered_check
+        @users.each do |element|
+            if element.name == @user.name && element.google_id == @user.google_id && element.email == @user.email
+                @user = element
+                return true
+            end
+        end
+        return false
     end
 end
