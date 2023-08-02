@@ -4,11 +4,10 @@ class TasksController < ApplicationController
 
     # GET /users/:user_id/tasks or /users/:user_id/tasks.json
     def index
-        @tasks = Task.all
+        # ユーザが登録したタスクをすべて取得
+        @tasks = Task.where(user_id: params[:user_id])
 
-        respond_to do |format|
-            format.json { render json: @tasks, status: :ok }
-        end
+        render json: @tasks, status: :ok 
     end
 
     # GET /tasks/1 or /tasks/1.json
@@ -28,33 +27,33 @@ class TasksController < ApplicationController
     def create
         @task = Task.new(task_params)
 
-        respond_to do |format|
-            if @task.save
-                format.json { message: "登録成功です。", status: :created }
-            else
-                format.json { render json: @task.errors, status: :unprocessable_entity }
-            end
-        end
+        # respond_to do |format|
+        #     if @task.save
+        #         format.json { message: "登録成功です。", status: :created }
+        #     else
+        #         format.json { render json: @task.errors, status: :unprocessable_entity }
+        #     end
+        # end
     end
 
     # PATCH/PUT /tasks/1 or /tasks/1.json
     def update
-        respond_to do |format|
-            if @task.update(task_params)
-                format.json { message: "更新完了です。", status: :ok }
-            else
-                format.json { render json: @task.errors, status: :unprocessable_entity }
-            end
-        end
+        # respond_to do |format|
+        #     if @task.update(task_params)
+        #         format.json { message: "更新完了です。", status: :ok }
+        #     else
+        #         format.json { render json: @task.errors, status: :unprocessable_entity }
+        #     end
+        # end
     end
 
     # DELETE /tasks/1 or /tasks/1.json
     def destroy
         @task.destroy
 
-        respond_to do |format|
-            format.json { message: "削除成功です。", status: :no_content }
-        end
+        # respond_to do |format|
+        #     format.json { message: "削除成功です。", status: :no_content }
+        # end
     end
 
     private
@@ -73,14 +72,9 @@ class TasksController < ApplicationController
 
     # ログインしてないとtaskは、操作できないのでログインしているかどうかを確認する。
     def action_check
-        # ログインしているならuser_idをセットする。
-        if session[:user_id] != nil
-            @task.user_id = session[:user_id]
-        # ログインしていなかったらエラーをjsonで返す。
-        else
-            respond_to do |format|
-                format.json { message: "ログインしてください。", status: :unauthorized }
-            end
+        # # ログインしていなかったらエラーをjsonで返す。
+        if params[:user_id] == nil
+            render json: { message: "ログインしてください。"}, status: :unauthorized 
         end
     end
 end

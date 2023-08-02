@@ -22,7 +22,8 @@ module Backend
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
-    config.api_only = true
+    # セッションを有効にする
+    config.api_only = false
 
     config.x.cors_allowed_origins = ENV.fetch('CORS_ALLOWED_ORIGINS', 'http://localhost:3000')
     config.session_store :cookie_store, key: '_backend_session'

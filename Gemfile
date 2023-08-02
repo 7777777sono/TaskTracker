@@ -16,6 +16,8 @@ gem 'rack-cors'
 
 gem 'bcrypt', '~> 3.1.7'
 
+gem 'activerecord-session_store'
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
