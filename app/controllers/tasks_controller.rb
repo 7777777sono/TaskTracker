@@ -27,13 +27,11 @@ class TasksController < ApplicationController
     def create
         @task = Task.new(task_params)
 
-        # respond_to do |format|
-        #     if @task.save
-        #         format.json { message: "登録成功です。", status: :created }
-        #     else
-        #         format.json { render json: @task.errors, status: :unprocessable_entity }
-        #     end
-        # end
+        if @task.save
+            render json: { message: "登録成功です。" }, status: :created
+        else
+            render json: @user.errors, status: :unprocessable_entity
+        end
     end
 
     # PATCH/PUT /tasks/1 or /tasks/1.json
