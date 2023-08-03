@@ -38,13 +38,11 @@ class TasksController < ApplicationController
 
     # PATCH/PUT /tasks/1 or /tasks/1.json
     def update
-        # respond_to do |format|
-        #     if @task.update(task_params)
-        #         format.json { message: "更新完了です。", status: :ok }
-        #     else
-        #         format.json { render json: @task.errors, status: :unprocessable_entity }
-        #     end
-        # end
+        if @task.update(task_params)
+            render json: { message: "更新完了です。" }, status: :created
+        else
+            render json: @user.errors, status: :unprocessable_entity
+        end
     end
 
     # DELETE /tasks/1 or /tasks/1.json
@@ -59,10 +57,7 @@ class TasksController < ApplicationController
     private
     # idに対応するデータを見つける
     def set_task
-        # ログインしていたらそのユーザが登録したタスクを格納する
-        if session[:user_id] != nil
-            @task = Task.find_by(user_id: session[:user_id])
-        end
+        @task = Task.find(params[:id])
     end
 
     # 必須のtaskパラメータを取得する
@@ -72,7 +67,8 @@ class TasksController < ApplicationController
 
     # ログインしてないとtaskは、操作できないのでログインしているかどうかを確認する。
     def action_check
-        # # ログインしていなかったらエラーをjsonで返す。
+        puts params[:user_id]
+        # ログインしていなかったらエラーをjsonで返す。
         if params[:user_id] == nil
             render json: { message: "ログインしてください。"}, status: :unauthorized 
         end
