@@ -20,6 +20,10 @@ gem 'activerecord-session_store'
 
 gem 'whenever', require: false
 
+gem 'clockwork'
+
+gem 'line_notify'
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
