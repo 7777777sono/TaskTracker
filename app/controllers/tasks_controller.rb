@@ -47,9 +47,7 @@ class TasksController < ApplicationController
     def destroy
         @task.destroy
 
-        # respond_to do |format|
-        #     format.json { message: "削除成功です。", status: :no_content }
-        # end
+        render json: {message: "削除完了です。"}, status: :no_content
     end
 
     private
