@@ -13,7 +13,4 @@ class User < ApplicationRecord
 
     # google idは存在しているか
     validates :google_id, presence: true
-
-    # パスワードは、5から20文字まで
-    # validates :password, length: { in: 5..20 }
 end
