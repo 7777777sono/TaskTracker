@@ -1,4 +1,6 @@
 require 'clockwork'
+require 'uri'
+require 'net/http'
 require './environment'
 require './boot'
 
@@ -25,7 +27,21 @@ module Clockwork
                             msg = "#{ msg }#{ task.deadline.year.to_s }/#{ task.deadline.month.to_s }/#{ task.deadline.day.to_s }(#{ I18n.t("date.abbr_day_names")[task.deadline.wday] }) #{task.name}\n"
                         end
                     end
-                    LineNotify.send(user.token, msg)
+                    token = user.token
+
+                    url = 'https://notify-api.line.me/api/notify'
+
+                    uri = URI.parse(url)
+
+                    request = Net::HTTP::Post.new(uri)
+
+                    request['Authorization'] = "Bearer #{token}"
+
+                    request.set_form_data(message: msg)
+
+                    Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |https|
+                        https.request(request)
+                    end
                 end
             end
         end
@@ -34,5 +50,6 @@ module Clockwork
     # 日が変わったら締め切りが過ぎたタスクを消す。
     every(1.day, 'delete_expired_task', at: '00:00')
 
-    # every(30.seconds, 'line_send_notify')
+    # 毎日7:00, 12:00, 20:00に未完了のタスクを通知する。
+    every(1.day, 'line_send_notify', at: ['07:00', '12:00', '20:00'])
 end

@@ -30,9 +30,17 @@ class LineTokensController < ApplicationController
         msg = "#{@user.name}さん 登録ありがとうございます。\n登録したタスクを毎日 7:00, 12:00, 20:00 に通知します。"
 
         url = 'https://notify-api.line.me/api/notify'
+        # 与えられたURLを解析し、その内容を構造化されたオブジェクトとして返す。
+        # URLの様々な部分（スキーム、ホスト、パス、クエリパラメータなど）に簡単にアクセスすることが可能
         uri = URI.parse(url)
+
+        # HTTP POSTリクエストを作成する
         request = Net::HTTP::Post.new(uri)
+
+        # AuthorizationヘッダーにBearerトークンを設定して、APIリクエストに認証情報を付与
         request['Authorization'] = "Bearer #{token}"
+
+        # HTTPリクエストのボディをフォームデータとして設定する
         request.set_form_data(message: msg)
 
         # HTTPS経由でリクエストを送信

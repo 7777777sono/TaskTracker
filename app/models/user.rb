@@ -3,7 +3,8 @@ class User < ApplicationRecord
     has_secure_password
 
     # 複数のtaskモデルのインスタンスを持つ
-    has_many :tasks
+    # userが消えたらそのタスクを全て削除
+    has_many :tasks, dependent: :destroy
 
     # 名前は存在しているか
     validates :name, presence: true
