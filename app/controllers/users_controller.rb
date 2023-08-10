@@ -10,6 +10,7 @@ class UsersController < ApplicationController
 
     # GET /users/1 or /users/1.json
     def show
+        render json: @user, status: :ok 
     end
 
     # GET /users/new
@@ -31,7 +32,7 @@ class UsersController < ApplicationController
 
         # 更新じゃなくて登録済みなのに登録しそうだったら登録済みのメッセージを送る。
         if is_registered && !params[:is_update]
-            render  json: { message: "登録済みです。" }, status: :ok
+            render json: { message: "登録済みです。" }, status: :ok
             return
         # 更新かつきちんと登録されていたらそのユーザidを送る。
         elsif is_registered && params[:is_update]

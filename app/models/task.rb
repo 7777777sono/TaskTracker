@@ -8,7 +8,7 @@ class Task < ApplicationRecord
     validate :deadline_check
 
     # 優先度は、1から3
-    validates :passward, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 3 }
+    validates :priority, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 3 }
 
     # 完了したかどうかをきちんと定めているかどうか
     validates :is_complete, inclusion: { in: [true, false] } 

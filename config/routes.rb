@@ -10,4 +10,7 @@ Rails.application.routes.draw do
 
   post '/sessions', to: 'sessions#create'
   delete '/sessions/:user_id', to: 'sessions#destroy'
+
+  patch '/line_tokens/:user_id', to: 'line_tokens#update'
+  put '/line_tokens/:user_id', to: 'line_tokens#update'
 end

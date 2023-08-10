@@ -4,11 +4,10 @@ class TasksController < ApplicationController
 
     # GET /users/:user_id/tasks or /users/:user_id/tasks.json
     def index
-        @tasks = Task.all
+        # ユーザが登録したタスクをすべて取得
+        @tasks = Task.where(user_id: params[:user_id])
 
-        respond_to do |format|
-            format.json { render json: @tasks, status: :ok }
-        end
+        render json: @tasks, status: :ok 
     end
 
     # GET /tasks/1 or /tasks/1.json
@@ -28,23 +27,19 @@ class TasksController < ApplicationController
     def create
         @task = Task.new(task_params)
 
-        respond_to do |format|
-            if @task.save
-                format.json { message: "登録成功です。", status: :created }
-            else
-                format.json { render json: @task.errors, status: :unprocessable_entity }
-            end
+        if @task.save
+            render json: { message: "登録成功です。" }, status: :created
+        else
+            render json: @user.errors, status: :unprocessable_entity
         end
     end
 
     # PATCH/PUT /tasks/1 or /tasks/1.json
     def update
-        respond_to do |format|
-            if @task.update(task_params)
-                format.json { message: "更新完了です。", status: :ok }
-            else
-                format.json { render json: @task.errors, status: :unprocessable_entity }
-            end
+        if @task.update(task_params)
+            render json: { message: "更新完了です。" }, status: :created
+        else
+            render json: @user.errors, status: :unprocessable_entity
         end
     end
 
@@ -52,18 +47,13 @@ class TasksController < ApplicationController
     def destroy
         @task.destroy
 
-        respond_to do |format|
-            format.json { message: "削除成功です。", status: :no_content }
-        end
+        render json: {message: "削除完了です。"}, status: :no_content
     end
 
     private
     # idに対応するデータを見つける
     def set_task
-        # ログインしていたらそのユーザが登録したタスクを格納する
-        if session[:user_id] != nil
-            @task = Task.find_by(user_id: session[:user_id])
-        end
+        @task = Task.find(params[:id])
     end
 
     # 必須のtaskパラメータを取得する
@@ -73,14 +63,10 @@ class TasksController < ApplicationController
 
     # ログインしてないとtaskは、操作できないのでログインしているかどうかを確認する。
     def action_check
-        # ログインしているならuser_idをセットする。
-        if session[:user_id] != nil
-            @task.user_id = session[:user_id]
+        puts params[:user_id]
         # ログインしていなかったらエラーをjsonで返す。
-        else
-            respond_to do |format|
-                format.json { message: "ログインしてください。", status: :unauthorized }
-            end
+        if params[:user_id] == nil
+            render json: { message: "ログインしてください。"}, status: :unauthorized 
         end
     end
 end

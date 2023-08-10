@@ -3,7 +3,8 @@ class User < ApplicationRecord
     has_secure_password
 
     # 複数のtaskモデルのインスタンスを持つ
-    has_many :tasks
+    # userが消えたらそのタスクを全て削除
+    has_many :tasks, dependent: :destroy
 
     # 名前は存在しているか
     validates :name, presence: true
@@ -13,7 +14,4 @@ class User < ApplicationRecord
 
     # google idは存在しているか
     validates :google_id, presence: true
-
-    # パスワードは、5から20文字まで
-    validates :password, length: { in: 5..20 }
 end
