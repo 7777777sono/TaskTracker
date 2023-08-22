@@ -19,3 +19,7 @@ services:
           property: connectionString
       - key: RAILS_MASTER_KEY
         sync: false
+
+- type: clock
+  name: clockwork
+  command: bundle exec clockwork config/clock.rb  # Clockwork タスクを実行するコマンドを指定
