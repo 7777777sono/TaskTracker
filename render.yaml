@@ -1,12 +1,12 @@
 databases:
   - name: task-tracker
-    databaseName: task_tracker
+    databaseName: task_tracker_r8v8
     user: sonoda7777777
     region: singapore
 
 services:
   - type: web
-    name: task_tracker
+    name: task-tracker
     env: ruby
     region: singapore
     buildCommand: "./bin/render-build.sh"
