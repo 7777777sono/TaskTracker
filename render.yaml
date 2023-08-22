@@ -1,7 +1,7 @@
 databases:
   - name: task-tracker
     databaseName: task_tracker_r8v8
-    user: sonoda7777777
+    user: task-tracker
     region: singapore
 
 services:
