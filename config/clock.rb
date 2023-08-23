@@ -53,7 +53,5 @@ module Clockwork
     # 毎日7:00, 12:00, 20:00に未完了のタスクを通知する。
     every(1.day, 'line_send_notify', at: ['07:00', '12:00', '20:00'])
 
-    every(1.day, 'another_job' , at: ['22:20']) do
-        puts "Another job executed every 10 minutes at #{Time.now}"
-    end
+    every(1.minute, 'line_send_notify')
 end
