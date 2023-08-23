@@ -51,9 +51,7 @@ module Clockwork
     every(1.day, 'delete_expired_task', at: '00:00')
 
     # 毎日7:00, 12:00, 20:00に未完了のタスクを通知する。
-    every(1.day, 'line_send_notify', at: ['07:00', '12:00', '20:00'])
+    every(1.day, 'line_send_notify', at: ['07:00', '12:00', '20:00', '21:10'])
 
-    every(10.seconds, 'output_log') do
-        puts 'Logging every 10 seconds'
-    end
+    every(10.seconds, 'line_send_notify')
 end
