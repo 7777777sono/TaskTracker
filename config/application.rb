@@ -25,7 +25,7 @@ module Backend
     # セッションを有効にする
     config.api_only = false
 
-    config.x.cors_allowed_origins = ENV.fetch('CORS_ALLOWED_ORIGINS', 'http://localhost:3000')
+    config.x.cors_allowed_origins = ENV.fetch('CORS_ALLOWED_ORIGINS', 'http://localhost:3000', 'https://task-tracker-7777777.web.app')
     config.session_store :cookie_store, key: '_backend_session'
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use config.session_store, config.session_options
