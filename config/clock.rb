@@ -1,6 +1,9 @@
 require 'clockwork'
 require 'uri'
 require 'net/http'
+require './config/boot'
+require './config/environment'
+require './config/application'
 
 module Clockwork
     handler do |job|
@@ -51,5 +54,11 @@ module Clockwork
     # 毎日7:00, 12:00, 20:00に未完了のタスクを通知する。
     every(1.day, 'line_send_notify', at: ['07:00', '12:00', '20:00'])
 
-    every(1.minute, 'line_send_notify')
+    every(1.minute, 'my_job') do
+        # ここに実行したいタスクを記述
+        @users = User.all
+        @users.each do |user|
+            puts user.name
+        end
+    end
 end
