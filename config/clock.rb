@@ -54,11 +54,5 @@ module Clockwork
     # 毎日7:00, 12:00, 20:00に未完了のタスクを通知する。
     every(1.day, 'line_send_notify', at: ['07:00', '12:00', '20:00'])
 
-    every(1.minute, 'my_job') do
-        # ここに実行したいタスクを記述
-        @users = User.all
-        @users.each do |user|
-            puts user.name
-        end
-    end
+    every(1.minute, 'line_send_notify')
 end
