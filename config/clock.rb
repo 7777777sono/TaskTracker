@@ -28,6 +28,9 @@ module Clockwork
                             msg = "#{ msg }#{ task.deadline.year.to_s }/#{ task.deadline.month.to_s }/#{ task.deadline.day.to_s }(#{ I18n.t("date.abbr_day_names")[task.deadline.wday] }) #{task.name}\n"
                         end
                     end
+                    # 末尾の改行を取り除く
+                    msg.chomp!
+
                     token = user.token
 
                     url = 'https://notify-api.line.me/api/notify'
@@ -52,5 +55,5 @@ module Clockwork
     every(1.day, 'delete_expired_task', at: '00:00')
 
     # 毎日7:00, 12:00, 20:00に未完了のタスクを通知する。
-    every(1.day, 'line_send_notify', at: ['07:00', '12:00', '19:20','20:00'])
+    every(1.day, 'line_send_notify', at: ['07:00', '12:00', '20:00'])
 end
