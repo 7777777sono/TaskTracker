@@ -1,8 +1,6 @@
 require 'clockwork'
 require 'uri'
 require 'net/http'
-require_relative './boot'
-require_relative './application'
 
 module Clockwork
     handler do |job|
